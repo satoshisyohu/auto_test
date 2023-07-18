@@ -1,0 +1,6 @@
+.idea
+./credentials
+./data/*
+*.log
+*.pyc
+__pycache__/

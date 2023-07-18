@@ -1,0 +1,147 @@
+microService: cotra
+
+requestURI: /drink-records/create
+method: POST
+content-type: application/json
+
+#一つの区切り
+#↓----------------------------------------------------------------------------↓
+# 最初はテストケース
+testCase:
+  "01":
+    title: 顧客情報が登録されること
+
+    # 前提条件
+    ##　顧客情報の登録が未済であること
+
+    # テストタイトル　
+    ## 顧客情報が登録されること
+
+    # テストシナリオ
+    # 〇〇TBLにレコードが1件登録されること
+    # APIが正常終了すること
+
+    # ヘダー
+    header:
+#      x-request-version: v1.4
+#      x-id-Token: xxx-xxx-yyy-mmm
+#      x-idempotency-key: test
+      deviceId: "${UUID}"
+      Content-Type: 'application/json'
+      # ボディ
+    request:
+      review: "4"
+      memo: "最高"
+      pic_path: "${UUID}/home/jpec"
+      receipt_id: "${UUID}"
+      drink_name: "${CURRENT_TIMESTAMP-}"
+#      requestAmount: testtest
+#      customerInfo:
+#        customerName: 田中
+#        customerNameKana: tanaka
+      # レスポンス
+
+    response:
+      body:
+        result: true
+      status: 200
+      # Spanner比較
+      # データベース名をどこから取得するかも悩みどころ。
+    spanner:
+      cotra:
+#      databases: "${ENV}-front-cotra"
+        - Drippers:
+            key: DripperId # keyは必須。これでDBにサーチをかける。
+            column:
+              DripperId: be403e44-2e5a-e5d9-b657-cb21695ee2f5
+              DripperName: V60
+              DripperType: 円錐
+              CreatedDripperDate: 2005-05-10
+              CreatedDate: 2023-05-28T03:03:35.45458494Z
+              CreatedUser: admin
+              UpdatedDate: 2023-05-28T03:03:35.45458494Z
+              UpdatedUser: admi
+        - Drippers:
+            key: DripperId # keyは必須。これでDBにサーチをかける。
+            column:
+              DripperId: be403e44-2e5a-e5d9-b657-cb21695ee2f6
+              DripperName: Karita Wave
+              DripperType: ウェーブ
+              CreatedDripperDate: 2005-05-10
+              CreatedDate: 2023-05-02T03:35:00Z
+              CreatedUser: admin
+              UpdatedDate: 2023-05-02T03:35:00Z
+              UpdatedUser: admin
+#
+#      deposit:
+#        DEM_Accounts:
+#          key: zdf_AccountId
+#          column:
+#            zdf_AccountId: xxx-xxx
+
+    log:
+      error:
+        count: 2
+        word:
+          - test
+          - test2
+      warn:
+        count: 1
+        word:
+          - test
+
+
+##一つの区切り
+##↓----------------------------------------------------------------------------↓
+## 最初はテストケース
+#  "02":
+#    title: 顧客情報が登録されること
+#
+#    # 前提条件
+#    ##　顧客情報の登録が未済であること
+#
+#    # テストタイトル　
+#    ## 顧客情報が登録されること
+#
+#    # テストシナリオ
+#    # 〇〇TBLにレコードが1件登録されること
+#    # APIが正常終了すること
+#
+#    # ヘダー
+#    header:
+#      x-request-version: v1.4
+#      x-id-Token: xxx-xxx-yyy-mmm
+#      x-idempotency-key: test
+#      # ボディ
+#    request:
+#      customerId: hogehoge
+#      requestAmount: testtest
+#      customerInfo:
+#        customerName: 田中
+#        customerNameKana: tanaka
+#      # レスポンス
+#    response:
+#      body:
+#        result: true
+#      status: 200
+#      # Spanner比較
+#      # データベース名をどこから取得するかも悩みどころ。
+#    spanner:
+#      databases: -front-cotra
+#      CTR_cotraCustomers:
+#        key: customerId
+#        result:
+#          Zdf_CustomerId: xxxx-yyyyzzzz-xxxx
+#          Zdf_AliasId: xxx-xxx-xxx
+#          createDate: now
+#          crationUserId: not applicable
+#    log:
+#      error:
+#        count: 2
+#        word:
+#          - test
+#          - test2
+#      warn:
+#        count: 1
+#        word:
+#          - test
