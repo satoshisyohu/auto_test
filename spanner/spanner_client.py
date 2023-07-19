@@ -39,27 +39,10 @@ def search_records(client, sql):
     with client.snapshot() as snapshot:
         results = snapshot.execute_sql(sql)
         return results
-    # for row in results:
-    #     dripper = Drippers(row)
-    #     print(dripper.dripperId, dripper.CreatedDripperDate, dripper.CreatedDate)
-
 
 def create_sql(table, key, value):
     sql = f'select * from {table} where {key} = \"{value}\"'
     return sql
-
-
-# class Drippers:
-#
-# def __init__(self, row):
-#     self.dripperId = row[0]
-#     self.DripperName = row[1]
-#     self.DripperType = row[2]
-#     self.CreatedDripperDate = row[3]
-#     self.CreatedDate = row[4]
-#     self.CreatedUser = row[5]
-#     self.UpdatedDate = row[6]
-#     self.UpdatedUser = row[7]
 
 
 if __name__ == "__main__":

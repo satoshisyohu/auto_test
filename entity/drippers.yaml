@@ -1,41 +1,33 @@
 Drippers:
   DripperId:
-    value:
     type: string
     crypt: false
     confidential: false
   DripperName:
-    value:
     type: string
     crypt: false
     confidential: false
   DripperType:
-    value:
     type: string
     crypt: true
     confidential: true
   CreatedDripperDate:
-    value:
     type: date
     crypt: false
     confidential: false
   CreatedDate:
-    value:
     type: string
     crypt: false
     confidential: false
   CreatedUser:
-    value:
     type: timestamp
     crypt: false
     confidential: false
   UpdatedDate:
-    value:
     type: string
     crypt: false
     confidential: false
   UpdatedUser:
-    value:
     type: timestamp
     crypt: false
     confidential: false

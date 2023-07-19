@@ -1,25 +1,21 @@
 import datetime
 import glob
-import json
 import os.path
-import sys
 
 import yaml
 import requests
-import pprint
 import dotenv
 import re
 
 from requests import Response
 
-import entity.drippers
-from spanner_client import spanner_client
+from spanner import spanner_client
+from spanner import create_entity as crate_spanner_entity
 import util.load_args
-from logger_client import logger_client
 from util.utils import switch_reserve_words
-from util.assert_spanner import compare_spanner
 
-from result_writer import result_writer as res_writer
+from result_writer import result_writer as writer
+from logging import getLogger
 
 URI = 'requestURI'
 TEST_CASE = 'testCase'
@@ -34,15 +30,15 @@ RESPONSE = 'response'
 BODY = 'body'
 SPANNER = 'spanner'
 LOG = 'log'
-HOST = "http://localhost:8080"
+HOST = "https://coffee-y3raiwisja-uc.a.run.app"
 KEY = "key"
 
 CRLF = '\r\n'
-SPACE_15 = '        '
+SPACE_15 = '      '
 
 NOT_COMPARE_WORDS = ["not compared"]
 
-logger = logger_client.get_logger()
+logger = getLogger("log")
 
 MICROSERVICES = {"cotra": "-front-cotra", "deposit": "-fcore-deposit"}
 
@@ -131,14 +127,15 @@ def create_target_test_list(obj, case_no):
 # param1: yamlファイル
 # param2  テストケース番号
 def execute_test(obj, test_list, env):
+    # テストケースでループする
     for test_no in test_list:
         logger.info(test_no)
 
         # テストに必要な情報を抽出する。
-        target_test_information: dict = obj[TEST_CASE][test_no]
+        target_test_information: dict = obj["testCase"][test_no]
 
         # headerの情報を抽出する
-        raw_header: dict = target_test_information[HEADER]
+        raw_header: dict = target_test_information["header"]
         # 予約後が含まれている場合は事前に変換する
         edited_header: dict = create_message(raw_header)
 
@@ -151,7 +148,12 @@ def execute_test(obj, test_list, env):
         logger.info(edited_requests_body)
         # APIの実行
         logger.info(f'テストケース{test_no}:「{target_test_information[TITLE]}」を実行します。')
-        response: Response = requests.post(url=HOST + obj[URI], json=edited_requests_body, headers=edited_header)
+        try:
+            response: Response = execute_api(obj.get(URI), env, edited_requests_body, edited_header)
+        except:
+            logger.info("APIの実行に失敗しました。")
+            continue
+
         logger.info(f'実行時間:{response.elapsed.total_seconds()}秒')
         logger.info(f'レスポンス:{response}')
 
@@ -174,12 +176,12 @@ def execute_test(obj, test_list, env):
         f = open('./data/createCustomer' + '_' + str(now), 'x', encoding='UTF-8')
         # excel書き込み用のカウンタインスタンス変数
         count = 4
-        wb = res_writer.create_workbook()
-        ws = res_writer.create_new_sheet(wb, f'TS-{test_no}', str(now))
+        wb = writer.create_workbook()
+        ws = writer.create_new_sheet(wb, f'TS-{test_no}', str(now))
         f.write('テスト番号：TS-' + test_no + CRLF)
         f.write('実行時刻：' + str(now) + CRLF)
         f.write('--------ステータスコード--------' + CRLF)
-        res_writer.write_expect_actual(ws=ws, count=count, title="ステータスコード")
+        writer.write_expect_actual(ws=ws, count=count, title="ステータスコード")
         write_expect_actual(f)
 
         f.write(SPACE_15 + str(response.status_code) + "|" + str(expected_status) + CRLF)
@@ -187,8 +189,8 @@ def execute_test(obj, test_list, env):
         # statusコードの比較
         if response.status_code == expected_status:
             # statusコードの書き込み
-            ws, count = res_writer.write_status_code(ws=ws, expected_status_code=expected_status,
-                                                     actual_status_code=response.status_code, count=count)
+            ws, count = writer.write_status_code(ws=ws, expected_status_code=expected_status,
+                                                 actual_status_code=response.status_code, count=count)
             # statusコードの比較に成功してステータスが200の場合
             if expected_status == 200:
                 f.write(f'--------レスポンスボディ比較--------{CRLF}')
@@ -248,7 +250,7 @@ def execute_test(obj, test_list, env):
 
                             # table名を取得する。
                             table_name = list(table.keys())[0]
-                            ws, count = res_writer.write_expect_actual(ws=ws, count=count, title=table_name)
+                            ws, count = writer.write_expect_actual(ws=ws, count=count, title=table_name)
 
                             # レコード取得時のカラム名を取得する
                             key = table_dict[table_name][KEY]
@@ -257,24 +259,31 @@ def execute_test(obj, test_list, env):
                             client = spanner_client.create_client('dev-spanner-trial')
                             sql = spanner_client.create_sql(table=table_name, key=key, value=value)
 
-                            spanner_response = list(spanner_client.search_records(client=client, sql=sql))
-
+                            spanner_responses = list(spanner_client.search_records(client=client, sql=sql))
+                            print(spanner_responses)
                             # responseのリストの長さが0の場合はエラーとして書き込む
                             f.write(f'{table_name}{CRLF}')
 
                             write_expect_actual(f)
 
-                            for response in spanner_response:
+                            # todo 実際値：期待値を比較する際に多い方をループする必要があるきがする
+                            # でも、よくよく考えると期待値は基本的に一意になるキーを指定するから、Spannerから2レコード取得できている時点でエラー
+                            # 長さによって処理を分岐したほうがいいね。
+                            # spannerから受け取ったレコードを比較する
+                            is_table_statu = True
+                            for spanner_response in spanner_responses:
                                 if table_name in TABLE:
 
                                     # 取得した値のリストをdict形式に変換する
-                                    entity_dict: dict = util.assert_spanner.compare_spanner(table_name, response)
+                                    entity_dict: dict = crate_spanner_entity.crate_entiy_for_compare(table_name,
+                                                                                                     spanner_response)
 
                                     # 取得したdictからカラム名をリスト形式で抽出する
                                     column_names: list = entity_dict[table_name]
 
                                     # カラム名をリストで回し値をアサートしていく。
                                     for column_name in column_names:
+
                                         # spannerの値を比較する。
                                         # todo 比較の前に期待値レコードに特定のワードがないか確認する。あればスキップするようにする。
                                         if table_dict[table_name]["column"][column_name] == \
@@ -285,8 +294,11 @@ def execute_test(obj, test_list, env):
                                         else:
                                             f.write(
                                                 f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | NG{CRLF}')
-
                                             logger.info("ng")
+                                else:
+                                    logger.info("spanner entityが定義されていません。")
+                                    continue
+
 
                     # spannerのクライアントを作成する。
                     # TBLのレコードを取得する。
@@ -310,23 +322,39 @@ def execute_test(obj, test_list, env):
         # log取得
 
         # 結果をファイルに書き込み
-        res_writer.save_workbook(wb)
+        writer.save_workbook(wb)
         f.close()
 
 
 def create_message(elements):
     for element in elements:
         value: str = elements[element]
-
         if re.search(r"\${\w+}", value) is not None:
-            print(value)
-
             elements[element] = switch_reserve_words(value)
     return elements
 
 
 def write_expect_actual(f):
-    f.write(f'{SPACE_15} 期待値|実際値 {CRLF}')
+    f.write(f'{SPACE_15} 期待値|実際値|ステータス {CRLF}')
+
+
+def execute_api(uri, env, body, header):
+    """
+    Description:
+        APIを実行する
+    Args:
+        uri (str): リクエストURI
+        uri (env): 環境
+        uri (body): リクエストボディ
+        uri (header): リクエストヘダー
+    Returns:
+        dict: APIのレスポンス
+    """
+    # requests.post(url=HOST + uri, json=body, headers=header)
+    return requests.post(url=HOST + uri, json=body, headers=header)
+
+
+# def assert_spanner_entity()
 
 
 if __name__ == "__main__":

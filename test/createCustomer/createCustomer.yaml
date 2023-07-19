@@ -1,12 +1,13 @@
 microService: cotra
 
-requestURI: /drink-records/create
+requestURI: /dripper-records/create
 method: POST
 content-type: application/json
 
 #一つの区切り
 #↓----------------------------------------------------------------------------↓
 # 最初はテストケース
+#他になんかあるかな
 testCase:
   "01":
     title: 顧客情報が登録されること
@@ -30,26 +31,18 @@ testCase:
       Content-Type: 'application/json'
       # ボディ
     request:
-      review: "4"
-      memo: "最高"
-      pic_path: "${UUID}/home/jpec"
-      receipt_id: "${UUID}"
-      drink_name: "${CURRENT_TIMESTAMP-}"
-#      requestAmount: testtest
-#      customerInfo:
-#        customerName: 田中
-#        customerNameKana: tanaka
-      # レスポンス
+      dripper_name: ORIGAMI
+      dripper_receipt_quantity: "0"
 
+      # レスポンス
     response:
       body:
-        result: true
+        res: true
       status: 200
       # Spanner比較
       # データベース名をどこから取得するかも悩みどころ。
     spanner:
       cotra:
-#      databases: "${ENV}-front-cotra"
         - Drippers:
             key: DripperId # keyは必須。これでDBにサーチをかける。
             column:
@@ -89,6 +82,10 @@ testCase:
         count: 1
         word:
           - test
+      allowWords:
+        - "V60"
+        - "V68"
+
 
 
 ##一つの区切り

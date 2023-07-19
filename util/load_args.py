@@ -2,11 +2,11 @@ import argparse
 from logger import logger
 from logging import getLogger
 
-logger = getLogger("log")
+# logger = getLogger("log")
 
 
 def load_args():
-    logger.info("read args")
+    print("read args")
     args = None
     # 読み込む引数はテストケースフォルダ名
     # 環境名
