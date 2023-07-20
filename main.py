@@ -271,33 +271,33 @@ def execute_test(obj, test_list, env):
                             # 長さによって処理を分岐したほうがいいね。
                             # spannerから受け取ったレコードを比較する
                             is_table_statu = True
-                            for spanner_response in spanner_responses:
-                                if table_name in TABLE:
+                            # for spanner_response in spanner_responses:
+                            if table_name in TABLE:
 
-                                    # 取得した値のリストをdict形式に変換する
-                                    entity_dict: dict = crate_spanner_entity.crate_entiy_for_compare(table_name,
-                                                                                                     spanner_response)
+                                # 取得した値のリストをdict形式に変換する
+                                entity_dict: dict = crate_spanner_entity.crate_entity_for_compare(table_name,
+                                                                                                  spanner_responses)
 
-                                    # 取得したdictからカラム名をリスト形式で抽出する
-                                    column_names: list = entity_dict[table_name]
+                                # 取得したdictからカラム名をリスト形式で抽出する
+                                column_names: list = entity_dict[table_name]
 
-                                    # カラム名をリストで回し値をアサートしていく。
-                                    for column_name in column_names:
+                                # カラム名をリストで回し値をアサートしていく。
+                                for column_name in column_names:
 
-                                        # spannerの値を比較する。
-                                        # todo 比較の前に期待値レコードに特定のワードがないか確認する。あればスキップするようにする。
-                                        if table_dict[table_name]["column"][column_name] == \
-                                                entity_dict[table_name][column_name]["value"]:
-                                            f.write(
+                                    # spannerの値を比較する。
+                                    # todo 比較の前に期待値レコードに特定のワードがないか確認する。あればスキップするようにする。
+                                    if table_dict[table_name]["column"][column_name] == \
+                                            entity_dict[table_name][column_name]["value"]:
+                                        f.write(
                                                 f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | OK{CRLF}')
-                                            logger.info("ok")
-                                        else:
-                                            f.write(
-                                                f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | NG{CRLF}')
-                                            logger.info("ng")
-                                else:
-                                    logger.info("spanner entityが定義されていません。")
-                                    continue
+                                        logger.info("ok")
+                                    else:
+                                        f.write(
+                                            f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | NG{CRLF}')
+                                        logger.info("ng")
+                            else:
+                                logger.info("spanner entityが定義されていません。")
+                                continue
 
 
                     # spannerのクライアントを作成する。
