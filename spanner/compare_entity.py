@@ -1,4 +1,8 @@
 import datetime
+import re
+import sys
+
+import util.utils as util
 
 CRLF = '\r\n'
 SPACE_15 = '      '
@@ -6,6 +10,24 @@ LINE = '----------------------------------------------------------------------'
 
 def main():
     print("comapare Spanner")
+
+    NOT_COMPARED = '${NOT_COMPARED}'
+    IS_EXIST = '${IS_EXIST}'
+    CURRENT_TIMESTAMP = '${CURRENT_TIMESTAMP}'
+    #
+    # deal_reserve_spanner_words('${NOT_COMPARED}',"aa") #ok
+    # deal_reserve_spanner_words('${NOT_COMPARED}',None) #ok
+    # deal_reserve_spanner_words('${IS_EXIST}',"a") #ok
+    # deal_reserve_spanner_words('${IS_EXIST}',None) #ng
+
+    deal_reserve_spanner_words('${CURRENT_TIMESTAMP}','2023-07-21 00:44:00') #ok
+    deal_reserve_spanner_words('${CURRENT_TIMESTAMP}','2023-05-28 01:36:35') #ng
+    #
+    # deal_reserve_spanner_words("test","test") #ok
+    # deal_reserve_spanner_words("test","tet") #ok
+
+    sys.exit()
+
     expected_entity = {'DripperId': 'be403e44-2e5a-e5d9-b657-cb21695ee2f6', 'DripperName': None,
                        'DripperType': 'ウェーブ', 'CreatedDripperDate': datetime.date.today(),
                        'CreatedDate': datetime.datetime.now(),
@@ -94,11 +116,44 @@ def compare_spanner_entity(expected_entity, actual_entity, table_name):
                     print(f'{SPACE_15} None|{actual.get(column_name)}|NG {CRLF}')
             count += 1
 
-def deal_reserve_spanner_words():
+def deal_reserve_spanner_words(expectedWords,acutualWords):
+    NOT_COMPARED = '${NOT_COMPARED}'
+    IS_EXIST = '${IS_EXIST}'
+    CURRENT_TIMESTAMP = '${CURRENT_TIMESTAMP}'
     print("予約後の処理を実施する")
     # ${NOT_COMPARED}→比較対象外とする。
     # ${IS_EXIST}→対象のレコードがNull(None)でなければOK
     # ${CURRENT_TIMESTAMP}→API実行時刻であればOK
+    editedexpectedWords = None
+    editedAcutualWords = None
+    #とりあえず簡単に比較
+    if re.search(r"\${\w+}", expectedWords) is not None:
+        editedexpectedWords = util.switch_reserve_words(expectedWords)
+        if NOT_COMPARED in expectedWords:
+            print("okk")
+            return True
+        if IS_EXIST in expectedWords:
+            if acutualWords is not None:
+                print("okk")
+                return True
+            else:
+                print("ng")
+                return False
+        if CURRENT_TIMESTAMP in expectedWords:
+            start = datetime.timedelta(minutes=1)
+            end = datetime.timedelta(minutes=-1)
+            timestamp = datetime.datetime.now()
+            editedAcutualWords = datetime.datetime.strptime(acutualWords, '%Y-%m-%d %H:%M:%S')
+            if timestamp - start <= editedAcutualWords <= timestamp - end:
+                print("ok")
+                return True
+            else:
+                print("Ng")
+                return False
+    else:
+        return expectedWords == acutualWords
+
+
 
 
 if __name__ == "__main__":

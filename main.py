@@ -226,14 +226,29 @@ def execute_test(obj, test_list, env):
                     elif expected_response_body.get(compare_element) == actual_response_body.get(compare_element):
                         logger.info("response比較 is OK")
 
-                # Spannerの値の比較
-                # 比較対象のmicroservices名を抽出する。
-                microservices = target_test_information[SPANNER]
 
+            elif expected_status == 400 or 500:
+                # todo 今回はこれでいいが他の場合この比較方法ではだめな場合もある。
+                logger.info("エラー時の情報比較")
+                write_expect_actual(f)
+                # error
+
+                compareErrorWords(f, expected_response_body.get("error"), actual_response_body.get("error"))
+                # fields
+
+                compareErrorWords(f, expected_response_body.get("fields"), actual_response_body.get("fields"))
+                # global
+
+                compareErrorWords(f, expected_response_body.get("global"), actual_response_body.get("global"))
+
+            # Spannerの値の比較
+            # 比較対象のmicroservices名を抽出する。
+            microservices = None
+            microservices = target_test_information.get("spanner")
+            if microservices is None:
                 # microservicesごとにデータベースの期待値を比較していく
                 f.write('--------Spanner比較--------' + CRLF)
                 for target_databases in microservices:
-
                     # 対象のマイクロサービスが定義されていない場合は比較をしない。
                     if MICROSERVICES.get(target_databases) is not None:
 
@@ -242,16 +257,13 @@ def execute_test(obj, test_list, env):
 
                         # 対象microserviceから比較対象となるTBL名をリストとして抽出する。
                         table_objects: list = target_test_information[SPANNER][target_databases]
-
                         for table in table_objects:
-
                             # リストから抽出したオブジェクトをdict形式に変換する
                             table_dict = dict(table)
 
                             # table名を取得する。
                             table_name = list(table.keys())[0]
                             ws, count = writer.write_expect_actual(ws=ws, count=count, title=table_name)
-
                             # レコード取得時のカラム名を取得する
                             key = table_dict[table_name][KEY]
                             logger.info(key)
@@ -276,8 +288,7 @@ def execute_test(obj, test_list, env):
 
                                 # 取得した値のリストをdict形式に変換する
                                 entity_dict: dict = crate_spanner_entity.crate_entity_for_compare(table_name,
-                                                                                                  spanner_responses)
-
+                                                                                                      spanner_responses)
                                 # 取得したdictからカラム名をリスト形式で抽出する
                                 column_names: list = entity_dict[table_name]
 
@@ -287,9 +298,9 @@ def execute_test(obj, test_list, env):
                                     # spannerの値を比較する。
                                     # todo 比較の前に期待値レコードに特定のワードがないか確認する。あればスキップするようにする。
                                     if table_dict[table_name]["column"][column_name] == \
-                                            entity_dict[table_name][column_name]["value"]:
+                                                entity_dict[table_name][column_name]["value"]:
                                         f.write(
-                                                f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | OK{CRLF}')
+                                            f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | OK{CRLF}')
                                         logger.info("ok")
                                     else:
                                         f.write(
@@ -298,32 +309,23 @@ def execute_test(obj, test_list, env):
                             else:
                                 logger.info("spanner entityが定義されていません。")
                                 continue
-
-
-                    # spannerのクライアントを作成する。
-                    # TBLのレコードを取得する。
-                    # 値を比較する。OK、NG等のアサーションを実施する。
                     else:
+                        # spannerのクライアントを作成する。
+                        # TBLのレコードを取得する。
+                        # 値を比較する。OK、NG等のアサーションを実施する。
                         logger.info("定義されていないマイクロサービスです")
                         continue
+    else:
+        # ステータスコードの比較に失敗した場合は処理終了
+        logger.info("statusコード比較失敗")
 
-            elif expected_status == 400 or 500:
-                logger.info("エラー時の情報比較")
+    # db比較
 
+    # log取得
 
-
-
-
-        else:
-            logger.info("statusコード比較失敗")
-
-        # db比較
-
-        # log取得
-
-        # 結果をファイルに書き込み
-        writer.save_workbook(wb)
-        f.close()
+    # 結果をファイルに書き込み
+    writer.save_workbook(wb)
+    f.close()
 
 
 def create_message(elements):
@@ -335,7 +337,13 @@ def create_message(elements):
 
 
 def write_expect_actual(f):
-    f.write(f'{SPACE_15} 期待値|実際値|ステータス {CRLF}')
+    f.write(f'期待値|実際値|ステータス {CRLF}')
+    print(f'期待値|実際値|ステータス {CRLF}')
+
+
+def outputCompareResult(f, expectedWords, actualWords, status):
+    f.write(f'{expectedWords} | {actualWords} | {status} {CRLF}')
+    print(f'{expectedWords} | {actualWords} | {status} {CRLF}')
 
 
 def execute_api(uri, env, body, header):
@@ -344,17 +352,53 @@ def execute_api(uri, env, body, header):
         APIを実行する
     Args:
         uri (str): リクエストURI
-        uri (env): 環境
-        uri (body): リクエストボディ
-        uri (header): リクエストヘダー
+        env (str): 環境
+        body (dict): リクエストボディ
+        header (dict): リクエストヘダー
     Returns:
-        dict: APIのレスポンス
+        Response: APIのレスポンス
     """
     # requests.post(url=HOST + uri, json=body, headers=header)
     return requests.post(url=HOST + uri, json=body, headers=header)
 
 
-# def assert_spanner_entity()
+def compareWords(expectedWords, actualWords):
+    """
+    Description:
+        ２つの文言を比較する。（レスポンス用）※todo その他で比較できるかも確認する。
+    Args:
+        expectedWords (any): リクエストURI
+        actualWords (any): 環境
+    Returns:
+        bool: 比較成功；True
+              比較失敗：False
+    """
+    return expectedWords == actualWords
+
+
+def compareErrorWords(f, expectedWords, actualWords):
+    """
+    Description:
+        ２つの文言を比較する。（レスポンス用）※todo その他で比較できるかも確認する。
+    Args:
+        expectedWords (any): リクエストURI
+        actualWords (any): 環境
+    Returns:
+        bool: 比較成功；True
+              比較失敗：False
+    """
+    if expectedWords is None:
+        # error要素の比較
+        if compareWords(expectedWords, actualWords):
+            outputCompareResult(f, expectedWords, actualWords,
+                                "OK")
+        else:
+            outputCompareResult(f, expectedWords, actualWords,
+                                "NG")
+    else:
+        outputCompareResult(f, expectedWords, actualWords,
+                            "NG")
+    # def assert_spanner_entity()
 
 
 if __name__ == "__main__":
