@@ -127,8 +127,16 @@ def create_target_test_list(obj, case_no):
 # param1: yamlファイル
 # param2  テストケース番号
 def execute_test(obj, test_list, env):
+    # 結果書き込み用のjson
+    testSummaryJson = {}
+
     # テストケースでループする
     for test_no in test_list:
+
+        isResponseStatusCode = True
+        isResponseResult = True
+        isSpannerResult = True
+        isLoggingResult = True
         logger.info(test_no)
 
         # テストに必要な情報を抽出する。
@@ -243,11 +251,10 @@ def execute_test(obj, test_list, env):
 
             # Spannerの値の比較
             # 比較対象のmicroservices名を抽出する。
-            microservices = None
             microservices = target_test_information.get("spanner")
             if microservices is None:
                 # microservicesごとにデータベースの期待値を比較していく
-                f.write('--------Spanner比較--------' + CRLF)
+                f.write(f'--------Spanner比較--------{CRLF}')
                 for target_databases in microservices:
                     # 対象のマイクロサービスが定義されていない場合は比較をしない。
                     if MICROSERVICES.get(target_databases) is not None:
@@ -282,13 +289,13 @@ def execute_test(obj, test_list, env):
                             # でも、よくよく考えると期待値は基本的に一意になるキーを指定するから、Spannerから2レコード取得できている時点でエラー
                             # 長さによって処理を分岐したほうがいいね。
                             # spannerから受け取ったレコードを比較する
-                            is_table_statu = True
+                            is_table_status = True
                             # for spanner_response in spanner_responses:
                             if table_name in TABLE:
 
                                 # 取得した値のリストをdict形式に変換する
                                 entity_dict: dict = crate_spanner_entity.crate_entity_for_compare(table_name,
-                                                                                                      spanner_responses)
+                                                                                                  spanner_responses)
                                 # 取得したdictからカラム名をリスト形式で抽出する
                                 column_names: list = entity_dict[table_name]
 
@@ -298,7 +305,7 @@ def execute_test(obj, test_list, env):
                                     # spannerの値を比較する。
                                     # todo 比較の前に期待値レコードに特定のワードがないか確認する。あればスキップするようにする。
                                     if table_dict[table_name]["column"][column_name] == \
-                                                entity_dict[table_name][column_name]["value"]:
+                                            entity_dict[table_name][column_name]["value"]:
                                         f.write(
                                             f'{SPACE_15}{str(entity_dict[table_name][column_name]["value"])} | {str(table_dict[table_name]["column"][column_name])} | OK{CRLF}')
                                         logger.info("ok")
@@ -315,16 +322,23 @@ def execute_test(obj, test_list, env):
                         # 値を比較する。OK、NG等のアサーションを実施する。
                         logger.info("定義されていないマイクロサービスです")
                         continue
-    else:
-        # ステータスコードの比較に失敗した場合は処理終了
-        logger.info("statusコード比較失敗")
+        else:
+            # ステータスコードの比較に失敗した場合は処理終了
+            logger.info("statusコード比較失敗")
+        isResponseStatusCode = True
+        isResponseResult = True
+        isSpannerResult = True
+        isLoggingResult = True
 
-    # db比較
+        # テスト結果を確認する
+        if isResponseStatusCode and isResponseResult and isSpannerResult and isLoggingResult:
+            testSummaryJson[test_no] = "OK"
+        else:
+            testSummaryJson[test_no] = "NG"
 
-    # log取得
-
+    writeTestSummary(f, testSummaryJson)
     # 結果をファイルに書き込み
-    writer.save_workbook(wb)
+    # writer.save_workbook(wb)
     f.close()
 
 
@@ -337,8 +351,8 @@ def create_message(elements):
 
 
 def write_expect_actual(f):
-    f.write(f'期待値|実際値|ステータス {CRLF}')
-    print(f'期待値|実際値|ステータス {CRLF}')
+    f.write(f'期待値|実際値|ステータス\r\n')
+    print(f'期待値|実際値|ステータス\r\n')
 
 
 def outputCompareResult(f, expectedWords, actualWords, status):
@@ -399,6 +413,26 @@ def compareErrorWords(f, expectedWords, actualWords):
         outputCompareResult(f, expectedWords, actualWords,
                             "NG")
     # def assert_spanner_entity()
+
+
+def writeTestSummary(f, summaryJson):
+    """
+    Description:
+        テスト終了後のサマリーを記載する。
+    Args:
+        f (write): ファイル
+        summaryJson (dict): statusCodeの比較結果
+    """
+    testCaseNumbers = list(summaryJson.keys())
+    writeTestSummaryHeader(f)
+
+    for testCaseNumber in testCaseNumbers:
+        f.write(f'{testCaseNumber} | {summaryJson.get(testCaseNumber)}')
+
+
+def writeTestSummaryHeader(f):
+    f.write(f'テスト番号 | 結果ステータス {CRLF}')
+    print(f'テスト番号 | 結果ステータス {CRLF}')
 
 
 if __name__ == "__main__":
