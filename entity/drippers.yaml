@@ -2,7 +2,7 @@ Drippers:
   DripperId:
     type: string
     crypt: false
-    confidential: false
+    confidential: true
   DripperName:
     type: string
     crypt: false

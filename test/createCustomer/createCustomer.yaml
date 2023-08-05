@@ -31,13 +31,24 @@ testCase:
       Content-Type: 'application/json'
       # ボディ
     request:
-      dripper_name: ORIGAMI
+      dripper_name: ORIGAMk
       dripper_receipt_quantity: "0"
 
       # レスポンス
     response:
       body:
-        res: true
+        res: "aa"
+        test: "bb"
+        test3:
+          test1: "aaaa"
+          test2: "aaaaa"
+          test3 :
+            test4:
+                - aaa
+                - aaa
+                - bbb
+
+      #ことらの場合は400or500の場合も正常
       status: 200
       # Spanner比較
       # データベース名をどこから取得するかも悩みどころ。

@@ -164,6 +164,9 @@ def execute_test(obj, test_list, env):
 
         logger.info(f'実行時間:{response.elapsed.total_seconds()}秒')
         logger.info(f'レスポンス:{response}')
+        logger.info(f'レスポンス:{(response.headers)}')
+        # これでcontent-typeを取れる
+        logger.info(f'レスポンス:{(response.headers.get("content-type"))}')
 
         # 実際値のレスポンスボディ抽出
         actual_response_body: dict = response.json()
@@ -207,20 +210,46 @@ def execute_test(obj, test_list, env):
                 # response比較
                 # 正常終了かつレスポンスの値が存在しない場合
                 compare_elements_dict: dict = {}
-                if len(expected_response_body) == 0 and actual_response_body == expected_response_body:
+                print(actual_response_body)
+
+                # まずは絶対一致で比較する
+                if actual_response_body == expected_response_body:
                     logger.info("response比較 is OK")
-                    f.write(f'{expected_response_body} | {actual_response_body} | OK')
+                    f.write(f'----------レスポンス比較-------------\r\n')
+
+                    f.write(f'期待値のレスポンス\r\n')
+                    exeRes = str(expected_response_body).replace(':', ':\r\n\t')
+                    f.write(f'{exeRes}\r\n')
+
+                    f.write(f'実際値のレスポンス\r\n')
+                    actRes = str(actual_response_body).replace(':', ':\r\n\t')
+                    f.write(f'{actRes}\r\n')
 
                 # 正常終了かつレスポンスに値が存在している場合値を比較する
                 # 比較方法は期待値のレスポンスから要素を取得し実際に帰ってきた値からも同じように要素を取得する。
                 # responseの辞書の数が同じ場合は期待値をループで回す。
                 # responseの辞書の数が期待値のほうが多い場合は期待値を回す。
-                elif len(expected_response_body) >= len(actual_response_body):
-                    compare_elements_dict = expected_response_body
 
-                # responseの辞書の数が実際値のほうが多い場合は実際値を回す
+                # 予約語が存在している場合は絶対一致で一致しないのでdictを回して比較していく
+                # 予約語以外の項目が一致していてかつ、予約語も想定通りの値の場合、一致とする
                 else:
-                    compare_elements_dict = actual_response_body
+                    logger.info("response比較 is NGかも")
+                    print(f'期待値レングス：{len(expected_response_body.keys())}')
+                    f.write(f'----------レスポンス比較-------------\r\n')
+
+                    f.write(f'期待値のレスポンス\r\n')
+                    exeRes = str(expected_response_body).replace(':', ':\r\n\t')
+                    f.write(f'{exeRes}\r\n')
+                    print(f'実際値レングス：{len(actual_response_body.keys())}')
+
+                    f.write(f'実際値のレスポンス\r\n')
+                    actRes = str(actual_response_body).replace(':', ':\r\n\t')
+
+                    f.write(f'{str(actRes)}\r\n')
+
+                # # responseの辞書の数が実際値のほうが多い場合は実際値を回す
+                # else:
+                #     compare_elements_dict = actual_response_body
 
                 # response
                 # この回し方はだめな気がする。
