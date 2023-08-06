@@ -1,5 +1,6 @@
 import datetime
 import glob
+import json
 import os.path
 
 import yaml
@@ -43,6 +44,13 @@ logger = getLogger("log")
 MICROSERVICES = {"cotra": "-front-cotra", "deposit": "-fcore-deposit"}
 
 TABLE = ["Drippers"]
+
+UUID = "${UUID}"
+NOT_NULL = "${NOT_NULL}"
+NOT_COMPARED = "${NOT_COMPARED)}"
+CURRENT_TIMESTAMP = "${CURRENT_TIMESTAMP}"
+
+RESERVED_WORDS = ["${UUID}", "${NOT_NULL}", "${NOT_COMPARED},${CURRENT_TIMESTAMP}"]
 
 
 def main():
@@ -166,10 +174,15 @@ def execute_test(obj, test_list, env):
         logger.info(f'レスポンス:{response}')
         logger.info(f'レスポンス:{(response.headers)}')
         # これでcontent-typeを取れる
+        # todo jsonじゃないことを想定して、content-typeによって処理を分岐させる
         logger.info(f'レスポンス:{(response.headers.get("content-type"))}')
-
-        # 実際値のレスポンスボディ抽出
-        actual_response_body: dict = response.json()
+        pdfFlag = False
+        if not response.headers.get("content-type") == "application/json; charset=utf-8":
+            print("レスポンス比較を実施しない")
+            pdfFlag = True
+        else:
+            # content-typeがjsonの場合はjsonに値を変換する
+            actual_response_body: dict = response.json()
 
         # 実際値のレスポンス情報抽出
         expected_response_body: dict = target_test_information[RESPONSE]
@@ -178,21 +191,15 @@ def execute_test(obj, test_list, env):
         expected_status = expected_response_body['status']
 
         # 期待値のレスポンスボディ抽出
+        # todo pdf等の場合もこのままで問題ない？
         expected_response_body: dict = expected_response_body['body']
 
         # ファイルに名前を付けるための現在時刻
         now = datetime.datetime.now()
 
-        # 引数から受け取った値をトリミングしてファイル名にするように変更する
+        # todo 引数から受け取った値をトリミングしてファイル名にするように変更する
         f = open('./data/createCustomer' + '_' + str(now), 'x', encoding='UTF-8')
-        # excel書き込み用のカウンタインスタンス変数
-        count = 4
-        wb = writer.create_workbook()
-        ws = writer.create_new_sheet(wb, f'TS-{test_no}', str(now))
-        f.write('テスト番号：TS-' + test_no + CRLF)
-        f.write('実行時刻：' + str(now) + CRLF)
-        f.write('--------ステータスコード--------' + CRLF)
-        writer.write_expect_actual(ws=ws, count=count, title="ステータスコード")
+
         write_expect_actual(f)
 
         f.write(SPACE_15 + str(response.status_code) + "|" + str(expected_status) + CRLF)
@@ -200,8 +207,6 @@ def execute_test(obj, test_list, env):
         # statusコードの比較
         if response.status_code == expected_status:
             # statusコードの書き込み
-            ws, count = writer.write_status_code(ws=ws, expected_status_code=expected_status,
-                                                 actual_status_code=response.status_code, count=count)
             # statusコードの比較に成功してステータスが200の場合
             if expected_status == 200:
                 f.write(f'--------レスポンスボディ比較--------{CRLF}')
@@ -212,10 +217,15 @@ def execute_test(obj, test_list, env):
                 compare_elements_dict: dict = {}
                 print(actual_response_body)
 
-                # まずは絶対一致で比較する
-                if actual_response_body == expected_response_body:
+                f.write(f'----------レスポンス比較-------------\r\n')
+
+                # pdfの場合、レスポンスの比較は実施しない
+                if pdfFlag:
+                    f.write(f'出力されているpdfにて結果確認\r\n')
+                    pass
+                # 絶対一致で比較する
+                elif actual_response_body == expected_response_body:
                     logger.info("response比較 is OK")
-                    f.write(f'----------レスポンス比較-------------\r\n')
 
                     f.write(f'期待値のレスポンス\r\n')
                     exeRes = str(expected_response_body).replace(':', ':\r\n\t')
@@ -230,38 +240,100 @@ def execute_test(obj, test_list, env):
                 # responseの辞書の数が同じ場合は期待値をループで回す。
                 # responseの辞書の数が期待値のほうが多い場合は期待値を回す。
 
+                # まずはjsonのkeyの数が同じか見る
                 # 予約語が存在している場合は絶対一致で一致しないのでdictを回して比較していく
                 # 予約語以外の項目が一致していてかつ、予約語も想定通りの値の場合、一致とする
-                else:
-                    logger.info("response比較 is NGかも")
+                # todo 今回はこで問題ないけど他で使う場合は要注意
+                elif len(actual_response_body) == len(expected_response_body):
+                    response_compare_list = []
+                    keys = list(expected_response_body.keys())
+                    # keyで比較して一つずつみていく。
+                    for key in keys:
+                        # まずは項目が一致しているか単純に比較する
+                        if expected_response_body.get(key) == actual_response_body.get(key):
+                            # 一致している場合はTrueを格納する
+                            response_compare_list.append(True)
+                        # 一致していない場合は予約語であるか確認する
+                        # fixme 予約後は絶対一致で比較しているのでkeyで取り出した中の項目がdictかつ予約後の場合は比較に失敗する
+                        elif expected_response_body.get(key) in RESERVED_WORDS:
+                            actualReservedWords = actual_response_body.get(key)
+                            # 期待値がuuidの場合
+                            # uuidの場合はlengthで確認する
+                            if expected_response_body.get(key) == UUID:
+                                if len(actualReservedWords) == 36:
+                                    response_compare_list.append(True)
+                                else:
+                                    response_compare_list.append(False)
+                            # 期待値がnot null の場合
+                            # not nullの場合はNoneでないことを確認する
+                            elif expected_response_body.get(key) == NOT_NULL:
+                                if actualReservedWords is not None:
+                                    response_compare_list.append(True)
+                                else:
+                                    response_compare_list.append(False)
+                            # 期待値が比較しないの場合
+                            # 比較しない文言が設定されている場合はpassとする
+                            elif expected_response_body.get(key) == NOT_COMPARE_WORDS:
+                                response_compare_list.append(True)
+                            # 期待値が現在時刻比較しないの場合
+                            elif expected_response_body.get(key) == CURRENT_TIMESTAMP:
+                                # todo 置き換える
+                                if actualReservedWords is not None:
+                                    response_compare_list.append(True)
+                                else:
+                                    response_compare_list.append(False)
+                            else:
+                                response_compare_list.append(False)
+                        # 期待通りのレスポンスが返却されていないのでNG
+                        else:
+                            response_compare_list.append(False)
+                    if False in response_compare_list:
+                        ress = False
+                    else:
+                        ress = True
+
+                    if ress:
+                        logger.info("response比較 is OK")
+
+                    else:
+                        logger.info("response比較 is NG")
                     print(f'期待値レングス：{len(expected_response_body.keys())}')
-                    f.write(f'----------レスポンス比較-------------\r\n')
 
                     f.write(f'期待値のレスポンス\r\n')
-                    exeRes = str(expected_response_body).replace(':', ':\r\n\t')
+                    exeRes = str(expected_response_body).replace(',', ',\r\n\t').replace('{', '{\r\n\t')
                     f.write(f'{exeRes}\r\n')
                     print(f'実際値レングス：{len(actual_response_body.keys())}')
 
                     f.write(f'実際値のレスポンス\r\n')
-                    actRes = str(actual_response_body).replace(':', ':\r\n\t')
+                    actRes = str(actual_response_body).replace(',', ',\r\n\t').replace('{', '{\r\n\t')
+                    f.write(f'{str(actRes)}\r\n')
 
+                # jsonのkeyの数が違う場合は比較NGなので比較等はせずに値をそのまま書き出す
+                else:
+                    logger.info("response比較 is NG")
+                    f.write(f'期待値のレスポンス\r\n')
+                    exeRes = json.dumps(expected_response_body, indent=2)
+                    f.write(f'{exeRes}\r\n')
+                    print(f'実際値レングス：{len(actual_response_body.keys())}')
+                    f.write(f'実際値のレスポンス\r\n')
+                    actRes = json.dumps(actual_response_body, indent=2)
                     f.write(f'{str(actRes)}\r\n')
 
                 # # responseの辞書の数が実際値のほうが多い場合は実際値を回す
                 # else:
                 #     compare_elements_dict = actual_response_body
 
-                # response
-                # この回し方はだめな気がする。
-                # todo 期待値側にしか予約後はないから期待値側を回す用にしないといけない。
-                # 実際値にのみある値が返却されていたときにどうする？
-                # todo 細かく比較できるように条件分岐していく必要あり
-                for compare_element in list(compare_elements_dict.keys()):
-                    # 予め比較しない文言が設定されている場合は比較を実施しない。
-                    if expected_response_body.get(compare_element) in NOT_COMPARE_WORDS:
-                        continue
-                    elif expected_response_body.get(compare_element) == actual_response_body.get(compare_element):
-                        logger.info("response比較 is OK")
+                # # response
+                # # この回し方はだめな気がする。
+                # # todo 期待値側にしか予約後はないから期待値側を回す用にしないといけない。
+                # # 実際値にのみある値が返却されていたときにどうする？
+                # # todo 細かく比較できるように条件分岐していく必要あり
+                # for compare_element in list(compare_elements_dict.keys()):
+                #     # 予め比較しない文言が設定されている場合は比較を実施しない。
+                #     if expected_response_body.get(compare_element) in NOT_COMPARE_WORDS:
+                #         continue
+                #     elif expected_response_body.get(compare_element) == actual_response_body.get(compare_element):
+                #         logger.info("response比較 is OK")
 
 
             elif expected_status == 400 or 500:
@@ -270,13 +342,19 @@ def execute_test(obj, test_list, env):
                 write_expect_actual(f)
                 # error
 
-                compareErrorWords(f, expected_response_body.get("error"), actual_response_body.get("error"))
+                isError = compareErrorWords(f, expected_response_body.get("error"), actual_response_body.get("error"))
                 # fields
 
-                compareErrorWords(f, expected_response_body.get("fields"), actual_response_body.get("fields"))
+                isFieldsError = compareErrorWords(f, expected_response_body.get("fields"),
+                                                  actual_response_body.get("fields"))
                 # global
 
-                compareErrorWords(f, expected_response_body.get("global"), actual_response_body.get("global"))
+                isGrobalError = compareErrorWords(f, expected_response_body.get("global"),
+                                                  actual_response_body.get("global"))
+                if not isError or not isFieldsError or not isGrobalError:
+                    print("比較失敗")
+                else:
+                    print("比較成功")
 
             # Spannerの値の比較
             # 比較対象のmicroservices名を抽出する。
@@ -435,13 +513,17 @@ def compareErrorWords(f, expectedWords, actualWords):
         if compareWords(expectedWords, actualWords):
             outputCompareResult(f, expectedWords, actualWords,
                                 "OK")
+            return True
         else:
             outputCompareResult(f, expectedWords, actualWords,
                                 "NG")
+            return False
+
     else:
         outputCompareResult(f, expectedWords, actualWords,
                             "NG")
-    # def assert_spanner_entity()
+        return False
+        # def assert_spanner_entity()
 
 
 def writeTestSummary(f, summaryJson):
