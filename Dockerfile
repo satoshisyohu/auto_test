@@ -12,6 +12,12 @@ ENV TERM xterm
 
 COPY requirements.txt .
 
+RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > ./google-cloud-sdk.tar.gz  \
+        && mkdir -p /gcloud \
+        && tar -C /gcloud -xvf ./google-cloud-sdk.tar.gz \
+        && /gcloud/google-cloud-sdk/install.sh
+ENV PATH $PATH:/gcloud/google-cloud-sdk/bin
+
 RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
 RUN pip install -r requirements.txt
