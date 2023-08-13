@@ -401,10 +401,10 @@ def execute_test(obj, test_list, env):
                             if table_name in TABLE:
 
                                 # 取得した値のリストをdict形式に変換する
-                                entity_dict: dict = crate_spanner_entity.crate_entity_for_compare(table_name,
+                                spannerEntit = crate_spanner_entity.crate_entity_for_compare(table_name,
                                                                                                   spanner_responses)
                                 # 取得したdictからカラム名をリスト形式で抽出する
-                                column_names: list = entity_dict[table_name]
+                                column_names: list = entity_dict.spannerEntity
 
                                 # カラム名をリストで回し値をアサートしていく。
                                 for column_name in column_names:

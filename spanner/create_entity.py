@@ -1,3 +1,4 @@
+import dataclasses
 import datetime
 import sys
 
@@ -31,9 +32,7 @@ def crate_entity_for_compare(table_name, entities):
         table_name (str): 変換対象のTBL
         entities (list): Spannerから取得したレコードのリスト
     Returns:
-        dict: {"TBL_NAME": [{{"column1": "values"}, {"column２": "values"}},
-        {{"column1": "values"}, {"column２": "values"}}],
-         "confidential": ["confidentialA"]}
+        SpannerEntityResponse:spannerの項目とコンフィデンシャル項目のリスト
 
     """
 
@@ -83,8 +82,15 @@ def crate_entity_for_compare(table_name, entities):
                 response_list.append(table_name_key[table_name])
         response[table_name] = response_list
         response["confidential"] = confidential_list
+        # tes = SpannerEntityResponse(response_list,confidential_list)
         print(response)
         return response
+
+
+@dataclasses
+class SpannerEntityResponse:
+    spannerEntity: list
+    confidentialList: list
 
 
 if __name__ == "__main__":
