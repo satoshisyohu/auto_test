@@ -48,6 +48,9 @@ def switch_reserve_words(target_word):
             editedTargetWord = str(change_word).replace(CURRENT_DATE_PLUS_MINUS, "").replace("}", "")
             now = datetime.date.today()
             res_target_word = changeTime(editedTargetWord, now)
+        else:
+            res_target_word =change_word
+
 
     return res_target_word
 
@@ -72,11 +75,10 @@ def dealFloat(target,now):
     return now + datetime.timedelta(hours=int(hour))
 
 
-
 def main():
     print("start")
 
-    target = '${CURRENT_TIMESTAMP+0.1}'
+    target = '${CURRENT_TIMESTAMP+0.9999}'
 
     # print(re.sub(r"\${\w+}", target,'test'))
     # print(re.search(r"/\${\w+}/", target)ß)
