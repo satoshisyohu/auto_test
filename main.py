@@ -53,7 +53,6 @@ CURRENT_TIMESTAMP = "${CURRENT_TIMESTAMP}"
 RESERVED_WORDS = ["${UUID}", "${NOT_NULL}", "${NOT_COMPARED},${CURRENT_TIMESTAMP}"]
 
 
-
 def main():
     # 環境変数の読み込み
 
