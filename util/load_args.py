@@ -1,8 +1,5 @@
 import argparse
-from logger import logger
-from logging import getLogger
 
-# logger = getLogger("log")
 
 
 def load_args():

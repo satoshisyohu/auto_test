@@ -1,0 +1,19 @@
+students:
+  test_id:
+    type: string
+    crypt: false
+    confidential: true
+  student_number:
+    type: int
+    crypt: false
+    confidential: false
+  created_date:
+    type: date
+    crypt: false
+    confidential: false
+  created_timestamp:
+    type: timestamp
+    crypt: false
+    confidential: false
+
+

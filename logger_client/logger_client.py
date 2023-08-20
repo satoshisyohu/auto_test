@@ -1,10 +1,6 @@
 from logging import getLogger, StreamHandler, INFO, Formatter
 
 
-# def main():
-#     # logger = get_logger()
-
-
 def get_logger():
     logger = getLogger("log")
     handler = StreamHandler()

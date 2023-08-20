@@ -3,13 +3,10 @@ import datetime
 import sys
 
 import yaml
-from logging import getLogger
 
-# logger = logger_client.get_logger()
 TARGET_TABLE = {"Drippers": "/Users/bandousatoshi/dev/python/zdf_api_autotest/entity/drippers.yaml"}
 
 
-# logger = getLogger("log")
 
 
 def main():
@@ -59,8 +56,8 @@ def crate_entity_for_compare(table_name, entities):
                     #     print("数字")
                     # elif column_information.get("type") == "date":
                     #     print("日付型")
-                    # elif column_information.get("type") == "timestamp":
-                    #     print("タイムスタンプ")
+                    if column_information.get("type") == "timestamp":
+                        print(entity[count])
 
                     # 暗号化対象の場合は暗号化して、格納する
                     if column_information.get("crypt"):
@@ -87,10 +84,6 @@ def crate_entity_for_compare(table_name, entities):
         return response
 
 
-@dataclasses
-class SpannerEntityResponse:
-    spannerEntity: list
-    confidentialList: list
 
 
 if __name__ == "__main__":

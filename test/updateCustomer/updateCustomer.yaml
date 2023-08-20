@@ -44,7 +44,20 @@ testCase:
       status: 200
       # Spanner比較
       # データベース名をどこから取得するかも悩みどころ。
-    spanner:
+#    spanner:
+#      cotra:
+#        - Drippers:
+#            key: DripperId # keyは必須。これでDBにサーチをかける。
+#            column:
+#              DripperId: be403e44-2e5a-e5d9-b657-cb21695ee2f5
+#              DripperName: V60
+#              DripperType: 円錐
+#              CreatedDripperDate: 2005-05-10
+#              CreatedDate: 2023-05-28T03:03:35.45458494Z
+#              CreatedUser: admin
+#              UpdatedDate: 2023-05-28T03:03:35.45458494Z
+#              UpdatedUser: admi
+    mysql:
       cotra:
         - Drippers:
             key: DripperId # keyは必須。これでDBにサーチをかける。
@@ -57,14 +70,6 @@ testCase:
               CreatedUser: admin
               UpdatedDate: 2023-05-28T03:03:35.45458494Z
               UpdatedUser: admi
-
-    #
-    #      deposit:
-    #        DEM_Accounts:
-    #          key: zdf_AccountId
-    #          column:
-    #            zdf_AccountId: xxx-xxx
-
     log:
       error:
         count: 2

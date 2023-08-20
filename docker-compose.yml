@@ -16,6 +16,9 @@ services:
       TZ: Asia/Tokyo  #time-zoneの指定. 日本時間(東京)に設定
     volumes:
       - data-volume:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    container_name: mysql-container
 
 volumes:
   data-volume:

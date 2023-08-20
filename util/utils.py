@@ -35,7 +35,7 @@ def switch_reserve_words(target_word):
         if UUID in change_word:
             res_target_word = target_word.replace(change_word, str(uuid.uuid4()))
         elif CURRENT_TIMESTAMP in change_word:
-            res_target_word = target_word.replace(change_word, datetime.datetime.now(JST).isoformat())
+            res_target_word = target_word.replace(change_word, datetime.datetime.now(JST).isoformat(timespec='milliseconds'))
         elif CURRENT_DATE in change_word:
             res_target_word = target_word.replace(change_word, datetime.date.today().isoformat())
 
@@ -68,7 +68,7 @@ def changeTime(target, now):
             targetTime = dealFloat(days,now)
         else:
             targetTime = now + datetime.timedelta(days=int(days))
-    return targetTime.isoformat()
+    return targetTime.isoformat(timespec='milliseconds')
 
 def dealFloat(target,now):
     hour = math.floor(float(target) * 24)
@@ -78,7 +78,7 @@ def dealFloat(target,now):
 def main():
     print("start")
 
-    target = '${CURRENT_TIMESTAMP+0.9999}'
+    target = '${CURRENT_DATE}'
 
     # print(re.sub(r"\${\w+}", target,'test'))
     # print(re.search(r"/\${\w+}/", target)ß)

@@ -16,7 +16,8 @@ import util.load_args
 from util.utils import switch_reserve_words
 
 from result_writer import result_writer as writer
-from logging import getLogger
+from logger_client import logger_client as logClient
+import mysqlClient
 
 URI = 'requestURI'
 TEST_CASE = 'testCase'
@@ -39,7 +40,7 @@ SPACE_15 = '      '
 
 NOT_COMPARE_WORDS = ["not compared"]
 
-logger = getLogger("log")
+logger = logClient.get_logger()
 
 MICROSERVICES = {"cotra": "-front-cotra", "deposit": "-fcore-deposit"}
 
@@ -359,7 +360,9 @@ def execute_test(obj, test_list, env):
             # Spannerの値の比較
             # 比較対象のmicroservices名を抽出する。
             microservices = target_test_information.get("spanner")
-            if microservices is None:
+            logger.info(microservices)
+            if microservices is not  None:
+                print(microservices)
                 # microservicesごとにデータベースの期待値を比較していく
                 f.write(f'--------Spanner比較--------{CRLF}')
                 for target_databases in microservices:
@@ -401,10 +404,10 @@ def execute_test(obj, test_list, env):
                             if table_name in TABLE:
 
                                 # 取得した値のリストをdict形式に変換する
-                                spannerEntit = crate_spanner_entity.crate_entity_for_compare(table_name,
+                                entity_dict = crate_spanner_entity.crate_entity_for_compare(table_name,
                                                                                                   spanner_responses)
                                 # 取得したdictからカラム名をリスト形式で抽出する
-                                column_names: list = entity_dict.spannerEntity
+                                column_names: list = entity_dict.get(table_name)
 
                                 # カラム名をリストで回し値をアサートしていく。
                                 for column_name in column_names:
@@ -429,6 +432,8 @@ def execute_test(obj, test_list, env):
                         # 値を比較する。OK、NG等のアサーションを実施する。
                         logger.info("定義されていないマイクロサービスです")
                         continue
+            if target_test_information.get("mysql"):
+                mysqlResult = mysqlClient.retrieveObject(target_test_information.get("mysql"),f)
         else:
             # ステータスコードの比較に失敗した場合は処理終了
             logger.info("statusコード比較失敗")
@@ -452,7 +457,7 @@ def execute_test(obj, test_list, env):
 def create_message(elements):
     for element in elements:
         value: str = elements[element]
-        if re.search(r"\${\w+}", value) is not None:
+        if re.search(r"^\${[a-zA-Z0-9-+_.]+}", value) is not None:
             elements[element] = switch_reserve_words(value)
     return elements
 

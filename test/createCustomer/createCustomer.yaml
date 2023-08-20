@@ -37,22 +37,26 @@ testCase:
       # レスポンス
     response:
       body:
-        res: "aa"
-        test: "bb"
-        test3:
-          test1: "aaaa"
-          test2: "aaaaa"
-          test3 :
-            test4:
-                - aaa
-                - aaa
-                - bbb
+        res: true
 
       #ことらの場合は400or500の場合も正常
       status: 200
       # Spanner比較
       # データベース名をどこから取得するかも悩みどころ。
-    spanner:
+#    spanner:
+#      cotra:
+#        - Drippers:
+#            key: DripperId # keyは必須。これでDBにサーチをかける。
+#            column:
+#              DripperId: be403e44-2e5a-e5d9-b657-cb21695ee2f5
+#              DripperName: V60
+#              DripperType: 円錐
+#              CreatedDripperDate: 2005-05-10
+#              CreatedDate: 2023-05-28T03:03:35.45458494Z
+#              CreatedUser: admin
+#              UpdatedDate: 2023-05-28T03:03:35.45458494Z
+#              UpdatedUser: admi
+    mysql:
       cotra:
         - Drippers:
             key: DripperId # keyは必須。これでDBにサーチをかける。
@@ -65,23 +69,7 @@ testCase:
               CreatedUser: admin
               UpdatedDate: 2023-05-28T03:03:35.45458494Z
               UpdatedUser: admi
-        - Drippers:
-            key: DripperId # keyは必須。これでDBにサーチをかける。
-            column:
-              DripperId: be403e44-2e5a-e5d9-b657-cb21695ee2f6
-              DripperName: Karita Wave
-              DripperType: ウェーブ
-              CreatedDripperDate: 2005-05-10
-              CreatedDate: 2023-05-02T03:35:00Z
-              CreatedUser: admin
-              UpdatedDate: 2023-05-02T03:35:00Z
-              UpdatedUser: admin
-#
-#      deposit:
-#        DEM_Accounts:
-#          key: zdf_AccountId
-#          column:
-#            zdf_AccountId: xxx-xxx
+
 
     log:
       error:
