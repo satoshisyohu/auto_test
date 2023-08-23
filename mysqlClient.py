@@ -38,7 +38,7 @@ def compareBase(mysqlJson: dict, f):
         mysqlJson (dict): {'microservice名':[{'TBL名':{'key':['レコード取得時のkey'],'column':{'columnA':'期待値','columnB':'期待値'}}}]}
         f (write): ファイル
     """
-    # confidentila項目のリストを格納する
+    # confidential項目のリストを格納する
     confidentialList = []
 
     # 対象となるmysqlのmicroservice名を全て取得する
@@ -48,7 +48,7 @@ def compareBase(mysqlJson: dict, f):
     for microserviceKey in microserviceKeys:
         # DB名を取得するために定義されているマイクロサービスか確認する
         if MICROSERVICES.get(microserviceKey) is not None:
-            confidential = compareProcess(mysqlJson.get(microserviceKey), f, MICROSERVICES.get(microserviceKey),
+            compareProcess(mysqlJson.get(microserviceKey), f, MICROSERVICES.get(microserviceKey),
                                           microserviceKey, confidentialList)
         else:
             print("定義されていないマイクロサービスです。mysqlClient.pyのMICROSERVICESに対象のマイクロサービスを追加してください。")

@@ -1,0 +1,197 @@
+{# if文のsample, 数値がプラスで緑色、マイナスで赤色 #}
+
+
+<html>
+    <body>
+        <h2>jinjaとif文</h2>
+        <p>色の凡例</p>
+        <p><span style="color: #008000;">緑色(プラス)</span></p>
+        <p><span style="color: #ff0000;">赤色(マイナス)</span></p>
+        <h1>テスト結果</h1>
+　       <hr>
+        {% for data in data_list %}
+            <h2>{{data.caseNo}}
+            {% if data.result %}
+                <span style="color: #008000;"> pass</span>
+            {% else %}
+                <span style="color: #ff0000;"> fail</span>
+            {% endif %}
+            </h2>
+            <h3>ステータスコード比較</h3>
+                <table border="1">
+                    <tr>
+                      <th>期待値</th>
+                      <th>実際値</th>
+                      <th>結果</th>
+                    </tr>
+                    <tr>
+                      <td>{{data.status.expect}}</td>
+                      <td>{{data.status.expect}}</td>
+                      <td>
+                      {% if data.status.result %}
+                        <span style="color: #008000;">OK</span>
+                      {% else %}
+                        <span style="color: #ff0000;">NG</span>
+                      {% endif %}
+                      </td>
+                    </tr>
+                </table>
+            <hr>
+
+            <h3>レスポンス比較</h3>
+                <table border="1">
+                    <tr>
+                      <th>比較結果</th>
+                    </tr>
+                    <tr>
+                      <td>
+                      {% if data.response.result %}
+                        <span style="color: #008000;">OK</span>
+                      {% else %}
+                        <span style="color: #ff0000;">NG</span>
+                      {% endif %}
+                      </td>
+                    </tr>
+                </table>
+                <h4>期待値</h4>
+                <p>{{data.response.expect}}</p>
+                <h4>実際値</h4>
+                <p>{{data.response.actual}}</p>
+            <hr>
+
+            <h3>TBL比較</h3>
+            {% for tableInfo in data.table %}
+              <h4>{{tableInfo.tableName}}</h4>
+              {% for records in tableInfo.record %}
+                    <table border="1">
+                        <thead>
+                            <tr>
+                              <th>カラム名</th>
+                              <th>期待値</th>
+                              <th>実際値</th>
+                              <th>結果</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          {% for record in records %}
+                              <tr>
+                                <td>
+                                  {{record.column.key}}
+                                </td>
+                                <td>
+                                  {{record.column.expect}}
+                                </td>
+                                <td>
+                                  {{record.column.actual}}
+                                </td>
+                                <td>
+                                {% if record.column.result %}
+                                  <span style="color: #008000;">OK</span>
+                                {% else %}
+                                  <span style="color: #ff0000;">NG</span>
+                                {% endif %}
+                                </td>
+                              </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+              {% endfor %}
+            {% endfor %}
+            <hr>
+            <h3>ログ比較</h3>
+            <h4>エラーログ件数</h4>
+                <table border="1">
+                    <tr>
+                      <th>期待値</th>
+                      <th>実際値</th>
+                      <th>結果</th>
+                    </tr>
+                    <tr>
+                      <td>{{data.log.error.count.expect}}</td>
+                      <td>{{data.log.error.count.actual}}</td>
+                      <td>
+                      {% if data.log.error.count.result %}
+                        <span style="color: #008000;">OK</span>
+                      {% else %}
+                        <span style="color: #ff0000;">NG</span>
+                      {% endif %}
+                      </td>
+                    </tr>
+                </table>
+            <h4>エラーログ文言</h4>
+                <table border="1">
+                  <thead>
+                    <tr>
+                        <th>期待値</th>
+                        <th>結果</th>
+                    </tr>
+                  </thead>
+                        <tbody>
+                          {% for logWords in data.log.error.word %}
+                              <tr>
+                                <td>
+                                  {{logWords.word}}
+                                </td>
+                                <td>
+                                {% if logWords.result %}
+                                  <span style="color: #008000;">OK</span>
+                                {% else %}
+                                  <span style="color: #ff0000;">NG</span>
+                                {% endif %}
+                                </td>
+                              </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+            <hr>
+
+            <h4>警告ログ件数</h4>
+                <table border="1">
+                    <tr>
+                      <th>期待値</th>
+                      <th>実際値</th>
+                      <th>結果</th>
+                    </tr>
+                    <tr>
+                      <td>{{data.log.warn.count.expect}}</td>
+                      <td>{{data.log.warn.count.actual}}</td>
+                      <td>
+                      {% if data.log.warn.count.result %}
+                        <span style="color: #008000;">OK</span>
+                      {% else %}
+                        <span style="color: #ff0000;">NG</span>
+                      {% endif %}
+                      </td>
+                    </tr>
+                </table>
+            <h4>警告ログ文言</h4>
+                <table border="1">
+                  <thead>
+                    <tr>
+                        <th>期待値</th>
+                        <th>結果</th>
+                    </tr>
+                  </thead>
+                        <tbody>
+                          {% for logWords in data.log.warn.word %}
+                              <tr>
+                                <td>
+                                  {{logWords.word}}
+                                </td>
+                                <td>
+                                {% if logWords.result %}
+                                  <span style="color: #008000;">OK</span>
+                                {% else %}
+                                  <span style="color: #ff0000;">NG</span>
+                                {% endif %}
+                                </td>
+                              </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+            <hr>
+            <h4>{{data.log.uri}}</h4>
+        {% endfor %}
+
+    </body>
+</html>
