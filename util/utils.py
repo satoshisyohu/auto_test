@@ -17,6 +17,7 @@ CURRENT_DATE_PLUS_MINUS = '${CURRENT_DATE'
 
 JST = datetime.timezone(datetime.timedelta(hours=+9), 'JST')
 
+
 # 予め予約されている変数を置き換える処理。
 # 指定できる予約後はReadme を参照すること
 
@@ -35,7 +36,8 @@ def switch_reserve_words(target_word):
         if UUID in change_word:
             res_target_word = target_word.replace(change_word, str(uuid.uuid4()))
         elif CURRENT_TIMESTAMP in change_word:
-            res_target_word = target_word.replace(change_word, datetime.datetime.now(JST).isoformat(timespec='milliseconds'))
+            res_target_word = target_word.replace(change_word,
+                                                  datetime.datetime.now(JST).isoformat(timespec='milliseconds'))
         elif CURRENT_DATE in change_word:
             res_target_word = target_word.replace(change_word, datetime.date.today().isoformat())
 
@@ -49,8 +51,7 @@ def switch_reserve_words(target_word):
             now = datetime.date.today()
             res_target_word = changeTime(editedTargetWord, now)
         else:
-            res_target_word =change_word
-
+            res_target_word = change_word
 
     return res_target_word
 
@@ -59,18 +60,19 @@ def changeTime(target, now):
     if "-" in target:
         days = target.replace("-", "")
         if '.' in days:
-            targetTime = dealFloat(days,now)
+            targetTime = dealFloat(days, now)
         else:
             targetTime = now - datetime.timedelta(days=int(days))
     else:
         days = target.replace("+", "")
         if '.' in days:
-            targetTime = dealFloat(days,now)
+            targetTime = dealFloat(days, now)
         else:
             targetTime = now + datetime.timedelta(days=int(days))
     return targetTime.isoformat(timespec='milliseconds')
 
-def dealFloat(target,now):
+
+def dealFloat(target, now):
     hour = math.floor(float(target) * 24)
     return now + datetime.timedelta(hours=int(hour))
 
