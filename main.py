@@ -5,7 +5,6 @@ import os.path
 
 import yaml
 import requests
-import dotenv
 import re
 
 from requests import Response
