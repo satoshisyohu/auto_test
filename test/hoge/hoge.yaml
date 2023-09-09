@@ -1,0 +1,116 @@
+microService: cotra
+
+requestURI: /demo/test
+method: POST
+content-type: application/json
+
+#一つの区切り
+#↓----------------------------------------------------------------------------↓
+# 最初はテストケース
+#他になんかあるかな
+testCase:
+  "01":
+    title: 顧客情報が登録されること
+
+    # 前提条件
+    ##　顧客情報の登録が未済であること
+
+    # テストタイトル　
+    ## 顧客情報が登録されること
+
+    # テストシナリオ
+    # 〇〇TBLにレコードが1件登録されること
+    # APIが正常終了すること
+
+    # ヘダー
+    header:
+#      x-request-version: v1.4
+#      x-id-Token: xxx-xxx-yyy-mmm
+#      x-idempotency-key: test
+      deviceId: "${UUID}"
+      Content-Type: 'application/json'
+      # ボディ
+    request:
+      testResponseList:
+        - dripper_name: null
+        - dripper_receipt_quantity: 0
+
+      # レスポンス
+    response:
+      body:
+        dripperId: hogehoge
+        test: "111"
+
+      #ことらの場合は400or500の場合も正常
+      status: 200
+
+    log:
+      error:
+        count: 2
+        word:
+          - test
+          - test2
+      warn:
+        count: 1
+        word:
+          - test
+      allowWords:
+        - "V60"
+        - "V68"
+
+
+
+##一つの区切り
+##↓----------------------------------------------------------------------------↓
+## 最初はテストケース
+#  "02":
+#    title: 顧客情報が登録されること
+#
+#    # 前提条件
+#    ##　顧客情報の登録が未済であること
+#
+#    # テストタイトル　
+#    ## 顧客情報が登録されること
+#
+#    # テストシナリオ
+#    # 〇〇TBLにレコードが1件登録されること
+#    # APIが正常終了すること
+#
+#    # ヘダー
+#    header:
+#      x-request-version: v1.4
+#      x-id-Token: xxx-xxx-yyy-mmm
+#      x-idempotency-key: test
+#      # ボディ
+#    request:
+#      customerId: hogehoge
+#      requestAmount: testtest
+#      customerInfo:
+#        customerName: 田中
+#        customerNameKana: tanaka
+#      # レスポンス
+#    response:
+#      body:
+#        result: true
+#      status: 200
+#      # Spanner比較
+#      # データベース名をどこから取得するかも悩みどころ。
+#    spanner:
+#      databases: -front-cotra
+#      CTR_cotraCustomers:
+#        key: customerId
+#        result:
+#          Zdf_CustomerId: xxxx-yyyyzzzz-xxxx
+#          Zdf_AliasId: xxx-xxx-xxx
+#          createDate: now
+#          crationUserId: not applicable
+#    log:
+#      error:
+#        count: 2
+#        word:
+#          - test
+#          - test2
+#      warn:
+#        count: 1
+#        word:
+#          - test
