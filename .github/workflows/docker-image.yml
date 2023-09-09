@@ -16,4 +16,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker compose -f docker-compose.yml up -d
+    - name: exec
+      run: docker compose exec python3 bash
+    - name: test
+      run: python3 main.py -env=ita -case=test/hoge    
       # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
