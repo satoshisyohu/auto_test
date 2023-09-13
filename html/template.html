@@ -2,11 +2,88 @@
 
 
 <html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/style.css">
+    <style type="text/css">
+        .flex_test-box {
+            padding: 10px;
+            display:flex;
+            margin:  10px;              /* 外側の余白 */
+            background-color: #eee;
+        }
+        .flex_test-item {
+            padding: 10px;
+            margin-left:  50px;              /* 外側の余白 */
+            margin-right:  50px;              /* 外側の余白 */
+            margin-top:  20px;              /* 外側の余白 */
+            margin-bottom:  20px;              /* 外側の余白 */
+
+            border-radius:  5px;        /* 角丸指定 */}
+
+        .flex_test-item:nth-child(1) {
+            background-color:  #FFF	; /* 背景色指定 */
+            color:  #000;
+        }
+        .flex_test-item:nth-child(2) {
+            background-color:  #FFF	; /* 背景色指定 */
+            color:  #4CAF50;
+        }
+        .flex_test-item:nth-child(3) {
+            background-color: #FFF; /* 背景色指定 */
+            color:  #F00;
+        }
+        .text {
+            width: 100%;
+            text-align: center;
+            min-height: 0%;
+        }
+        .text-count {
+            width: 100%;
+            text-align: center;
+            min-height: 0%;
+        }
+        　　</style>
+</head>
+
     <body>
-        <h2>jinjaとif文</h2>
+    <h2>Test Summary</h2>
+        <div class="flex_test-box">
+                <div class="flex_test-item">
+                    <div class="text">
+                        <p>Executed Test</p>
+                    </div>
+                    <div class="text-count">{{summary.allTest}}</div>
+            </div>
+                <div class="flex_test-item">
+                    <div class="text">
+                        <p>Passed Test</p>
+                    </div>
+                        <div class="text-count">{{summary.passedTest}}</div>
+            </div>
+                <div class="flex_test-item">
+                    <div class="text">
+                        <p>Failed Test</p>
+                    </div>
+                    <div class="text-count">{{summary.failedTest}}</div>
+            </div>
+        </div>
+        <hr>
+        </div>
+        <h2>テスト結果</h2>
+        <details>
+            <summary>TS-001 <span style="color: #008000;">Passed</span></p></summary>
+            sss
+        </details>
         <p>色の凡例</p>
         <p><span style="color: #008000;">緑色(プラス)</span></p>
         <p><span style="color: #ff0000;">赤色(マイナス)</span></p>
+        <div class="pie-chart-001">
+            <span>60%</span>
+        </div>
+
         <h1>テスト結果</h1>
 　       <hr>
         {% for data in data_list %}
@@ -18,7 +95,7 @@
             {% endif %}
             </h2>
             <h3>ステータスコード比較</h3>
-                <table border="1">
+                <table border="1" style="border-collapse: collapse">
                     <tr>
                       <th>期待値</th>
                       <th>実際値</th>
@@ -39,7 +116,7 @@
             <hr>
 
             <h3>レスポンス比較</h3>
-                <table border="1">
+                <table border="1" style="border-collapse: collapse">
                     <tr>
                       <th>比較結果</th>
                     </tr>
@@ -63,7 +140,7 @@
             {% for tableInfo in data.table %}
               <h4>{{tableInfo.tableName}}</h4>
               {% for records in tableInfo.record %}
-                    <table border="1">
+                    <table border="1" style="border-collapse: collapse">
                         <thead>
                             <tr>
                               <th>カラム名</th>
@@ -100,7 +177,7 @@
             <hr>
             <h3>ログ比較</h3>
             <h4>エラーログ件数</h4>
-                <table border="1">
+                <table border="1" style="border-collapse: collapse">
                     <tr>
                       <th>期待値</th>
                       <th>実際値</th>
@@ -119,7 +196,7 @@
                     </tr>
                 </table>
             <h4>エラーログ文言</h4>
-                <table border="1">
+                <table border="1" style="border-collapse: collapse">
                   <thead>
                     <tr>
                         <th>期待値</th>
@@ -146,7 +223,7 @@
             <hr>
 
             <h4>警告ログ件数</h4>
-                <table border="1">
+                <table border="1" style="border-collapse: collapse">
                     <tr>
                       <th>期待値</th>
                       <th>実際値</th>
@@ -165,7 +242,7 @@
                     </tr>
                 </table>
             <h4>警告ログ文言</h4>
-                <table border="1">
+                <table border="1" style="border-collapse: collapse">
                   <thead>
                     <tr>
                         <th>期待値</th>

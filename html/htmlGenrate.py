@@ -6,7 +6,8 @@ from jinja2 import FileSystemLoader, Environment
 
 def main():
     env = Environment(loader=FileSystemLoader('.', encoding='utf8'))
-    template = env.get_template('template.txt')
+
+    template = env.get_template('template.html')
 
     # data = {'data_list' : [
     #     {
@@ -32,7 +33,7 @@ def main():
 
         # レンダリングしてhtml出力
         rendered_html = template.render(params)
-        with open('./results/result_01.html', 'w', encoding='shift_jis') as f:
+        with open('./results/result_01.html', 'w', encoding='utf-8') as f:
             f.write(rendered_html)
             f.close()
 

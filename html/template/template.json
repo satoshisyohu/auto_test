@@ -1,65 +1,76 @@
 {
-  "data_list" : [
-  {
-    "caseNo": "TS-001",
-    "result": true,
-    "execute": true,
-    "status": {
+  "summary": {
+    "allTest": "30",
+    "passedTest": "20",
+    "failedTest": "10"
+  },
+  "data_list": [
+    {
+      "caseNo": "TS-001",
       "result": true,
-      "expect": 200,
-      "actual": 200
-    },
-    "response": {
-      "type": "pdf",
-      "result": true,
-      "expect": {"aaa": "aaa",
-        "bbb": "bbbb"},
-      "actual": {"aaa": "aaa",
-        "bbb": "bbbb"}
-    },
-    "table": [
-      {
-        "tableName": "Customer",
+      "execute": true,
+      "status": {
         "result": true,
-        "record": [[
-          {
-            "column": {
-              "key": "xxxxxx",
-              "expect": "xxxx",
-              "actual": "xxx",
-              "result": true
-            }
-          },
-          {
-            "column": {
-              "key": "xxxxxx",
-              "expect": "xxxx",
-              "actual": "xxx",
-              "result": true
-            }
-          }
-        ]]
-      }
-    ],
-    "log": {
-      "error": {
-        "count": {
-          "expect": "xxxx",
-          "actual": "xxx",
-          "result": true
-        },
-        "word": [
-          {
-            "word": "aaaaa",
-            "result": true
-          },
-          {
-            "word": "bbbb",
-            "result": true
-          }
-        ]
+        "expect": 200,
+        "actual": 200
       },
-      "warn": {
+      "response": {
+        "type": "pdf",
+        "result": true,
+        "expect": {
+          "aaa": "aaa",
+          "bbb": "bbbb"
+        },
+        "actual": {
+          "aaa": "aaa",
+          "bbb": "bbbb"
+        }
+      },
+      "table": [
+        {
+          "tableName": "Customer",
+          "result": true,
+          "record": [
+            [
+              {
+                "column": {
+                  "key": "xxxxxx",
+                  "expect": "xxxx",
+                  "actual": "xxx",
+                  "result": true
+                }
+              },
+              {
+                "column": {
+                  "key": "xxxxxx",
+                  "expect": "xxxx",
+                  "actual": "xxx",
+                  "result": true
+                }
+              }
+            ]
+          ]
+        }
+      ],
+      "log": {
+        "error": {
+          "count": {
+            "expect": "xxxx",
+            "actual": "xxx",
+            "result": true
+          },
+          "word": [
+            {
+              "word": "aaaaa",
+              "result": true
+            },
+            {
+              "word": "bbbb",
+              "result": true
+            }
+          ]
+        },
+        "warn": {
           "count": {
             "expect": "xxxx",
             "actual": "xxx",
@@ -75,8 +86,9 @@
               "result": true
             }
           ]
-      },
-      "uri": "https://xxxxxxxx"
+        },
+        "uri": "https://xxxxxxxx"
+      }
     }
-  }
-]}
+  ]
+}
