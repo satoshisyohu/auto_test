@@ -1,220 +1,343 @@
 
 
 
-<html>
+<html xmlns="http://www.w3.org/1999/html">
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        .flex_test-box {
+            padding: 10px;
+            display:flex;
+            margin:  10px;              /* Â§ñÂÅ¥„ÅÆ‰ΩôÁôΩ */
+            background-color: #eee;
+        }
+        .flex_test-item {
+            padding: 10px;
+            margin-left:  50px;              /* Â§ñÂÅ¥„ÅÆ‰ΩôÁôΩ */
+            margin-right:  50px;              /* Â§ñÂÅ¥„ÅÆ‰ΩôÁôΩ */
+            margin-top:  20px;              /* Â§ñÂÅ¥„ÅÆ‰ΩôÁôΩ */
+            margin-bottom:  20px;              /* Â§ñÂÅ¥„ÅÆ‰ΩôÁôΩ */
+
+            border-radius:  5px;        /* Ëßí‰∏∏ÊåáÂÆö */}
+
+        .flex_test-item:nth-child(1) {
+            background-color:  #FFF	; /* ËÉåÊôØËâ≤ÊåáÂÆö */
+            color:  #000;
+        }
+        .flex_test-item:nth-child(2) {
+            background-color:  #FFF	; /* ËÉåÊôØËâ≤ÊåáÂÆö */
+            color:  #4CAF50;
+        }
+        .flex_test-item:nth-child(3) {
+            background-color: #FFF; /* ËÉåÊôØËâ≤ÊåáÂÆö */
+            color:  #F00;
+        }
+        .text {
+            width: 100%;
+            text-align: center;
+            min-height: 0%;
+        }
+        .text-count {
+            width: 100%;
+            text-align: center;
+            min-height: 0%;
+        }
+        table {
+            border-collapse: separate;  /* Ë°®„ÅÆÁ∑ö„Å®Á∑ö„ÅÆÈñì„ÇíÁ©∫„Åë„Çã */
+            border-spacing:  5px;       /* Ë°®„ÅÆÁ∑ö„Å®Á∑ö„ÅÆÈñì„ÅÆÂπÖ */
+        }
+
+        th,td {
+            padding: 5px 10px;          /* ‰ΩôÁôΩÊåáÂÆö */
+        }
+
+        th {
+            background-color:  #3F51B5; /* ËÉåÊôØËâ≤ÊåáÂÆö */
+            color:  #fff;               /* ÊñáÂ≠óËâ≤ÊåáÂÆö */
+            font-weight:  normal;       /* ÊñáÂ≠ó„ÅÆÂ§™„ÅïÊåáÂÆö */
+        }
+
+        td {
+            background-color:  #c0c9ff; /* ËÉåÊôØËâ≤ÊåáÂÆö */
+        }
+        „ÄÄ„ÄÄ</style>
+</head>
+
     <body>
-        <h2>jinjaÇ∆ifï∂</h2>
-        <p>êFÇÃñ}ó·</p>
-        <p><span style="color: #008000;">óŒêF(ÉvÉâÉX)</span></p>
-        <p><span style="color: #ff0000;">ê‘êF(É}ÉCÉiÉX)</span></p>
-        <h1>ÉeÉXÉgåãâ </h1>
-Å@       <hr>
+    <h2>Test Summary</h2>
+        <div class="flex_test-box">
+                <div class="flex_test-item">
+                    <div class="text">
+                        <p>Executed Test</p>
+                    </div>
+                    <div class="text-count">30</div>
+            </div>
+                <div class="flex_test-item">
+                    <div class="text">
+                        <p>Passed Test</p>
+                    </div>
+                        <div class="text-count">20</div>
+            </div>
+                <div class="flex_test-item">
+                    <div class="text">
+                        <p>Failed Test</p>
+                    </div>
+                    <div class="text-count">10</div>
+            </div>
+        </div>
+        <hr>
+        </div>
+        <h2>„ÉÜ„Çπ„ÉàÁµêÊûú</h2>
         
-            <h2>TS-001
-            
+            <details>
+                <summary>TS-TS-001 <span style="color: #008000;">Passed</span></p></summary>
+                
                 <span style="color: #008000;"> pass</span>
-            
-            </h2>
-            <h3>ÉXÉeÅ[É^ÉXÉRÅ[Éhî‰är</h3>
-                <table border="1">
+                
+                </h2>
+                <h3>„Çπ„ÉÜ„Éº„Çø„Çπ„Ç≥„Éº„ÉâÊØîËºÉ</h3>
+                <table border="1" style="border-collapse: collapse">
                     <tr>
-                      <th>ä˙ë“íl</th>
-                      <th>é¿ç€íl</th>
-                      <th>åãâ </th>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÂÆüÈöõÂÄ§</th>
+                        <th>ÁµêÊûú</th>
                     </tr>
                     <tr>
-                      <td>200</td>
-                      <td>200</td>
-                      <td>
-                      
-                        <span style="color: #008000;">OK</span>
-                      
-                      </td>
+                        <td>200</td>
+                        <td>200</td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
                     </tr>
                 </table>
-            <hr>
+                <hr>
 
-            <h3>ÉåÉXÉ|ÉìÉXî‰är</h3>
-                <table border="1">
+                <h3>„É¨„Çπ„Éù„É≥„ÇπÊØîËºÉ</h3>
+                <table border="1" style="border-collapse: collapse">
                     <tr>
-                      <th>î‰äråãâ </th>
+                        <th>ÊØîËºÉÁµêÊûú</th>
                     </tr>
                     <tr>
-                      <td>
-                      
-                        <span style="color: #008000;">OK</span>
-                      
-                      </td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
                     </tr>
                 </table>
-                <h4>ä˙ë“íl</h4>
+                <h4>ÊúüÂæÖÂÄ§</h4>
                 <p>{'aaa': 'aaa', 'bbb': 'bbbb'}</p>
-                <h4>é¿ç€íl</h4>
+                <h4>ÂÆüÈöõÂÄ§</h4>
                 <p>{'aaa': 'aaa', 'bbb': 'bbbb'}</p>
-            <hr>
+                <hr>
 
-            <h3>TBLî‰är</h3>
-            
-              <h4>Customer</h4>
-              
-                    <table border="1">
-                        <thead>
-                            <tr>
-                              <th>ÉJÉâÉÄñº</th>
-                              <th>ä˙ë“íl</th>
-                              <th>é¿ç€íl</th>
-                              <th>åãâ </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                          
-                              <tr>
-                                <td>
-                                  xxxxxx
-                                </td>
-                                <td>
-                                  xxxx
-                                </td>
-                                <td>
-                                  xxx
-                                </td>
-                                <td>
-                                
-                                  <span style="color: #008000;">OK</span>
-                                
-                                </td>
-                              </tr>
-                            
-                              <tr>
-                                <td>
-                                  xxxxxx
-                                </td>
-                                <td>
-                                  xxxx
-                                </td>
-                                <td>
-                                  xxx
-                                </td>
-                                <td>
-                                
-                                  <span style="color: #008000;">OK</span>
-                                
-                                </td>
-                              </tr>
-                            
-                        </tbody>
-                    </table>
-              
-            
-            <hr>
-            <h3>ÉçÉOî‰är</h3>
-            <h4>ÉGÉâÅ[ÉçÉOåèêî</h4>
-                <table border="1">
+                <h3>TBLÊØîËºÉ</h3>
+                
+                <h4>Customer</h4>
+                
+                <table border="1" style="border-collapse: collapse">
+                    <thead>
                     <tr>
-                      <th>ä˙ë“íl</th>
-                      <th>é¿ç€íl</th>
-                      <th>åãâ </th>
+                        <th>„Ç´„É©„É†Âêç</th>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÂÆüÈöõÂÄ§</th>
+                        <th>ÁµêÊûú</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    <tr>
+                        <td>
+                            xxxxfffffxx
+                        </td>
+                        <td>
+                            xfffffffffxxx
+                        </td>
+                        <td>
+                            None
+                        </td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            xxxddddddddxxx
+                        </td>
+                        <td>
+                            xxxx
+                        </td>
+                        <td>
+                            xxx
+                        </td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    </tbody>
+                </table>
+                
+                
+                <hr>
+                <h3>„É≠„Ç∞ÊØîËºÉ</h3>
+                <h4>„Ç®„É©„Éº„É≠„Ç∞‰ª∂Êï∞</h4>
+                <table border="1" style="border-collapse: collapse">
+                    <tr>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÂÆüÈöõÂÄ§</th>
+                        <th>ÁµêÊûú</th>
                     </tr>
                     <tr>
-                      <td>xxxx</td>
-                      <td>xxx</td>
-                      <td>
-                      
-                        <span style="color: #008000;">OK</span>
-                      
-                      </td>
+                        <td>xxxx</td>
+                        <td>xxx</td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
                     </tr>
                 </table>
-            <h4>ÉGÉâÅ[ÉçÉOï∂åæ</h4>
-                <table border="1">
-                  <thead>
+                <h4>„Ç®„É©„Éº„É≠„Ç∞ÊñáË®Ä</h4>
+                <table border="1" style="border-collapse: collapse">
+                    <thead>
                     <tr>
-                        <th>ä˙ë“íl</th>
-                        <th>åãâ </th>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÁµêÊûú</th>
                     </tr>
-                  </thead>
-                        <tbody>
-                          
-                              <tr>
-                                <td>
-                                  aaaaa
-                                </td>
-                                <td>
-                                
-                                  <span style="color: #008000;">OK</span>
-                                
-                                </td>
-                              </tr>
+                    </thead>
+                    <tbody>
+                    
+                    <tr>
+                        <td>
+                            aaaaa
+                        </td>
+                        <td>
                             
-                              <tr>
-                                <td>
-                                  bbbb
-                                </td>
-                                <td>
-                                
-                                  <span style="color: #008000;">OK</span>
-                                
-                                </td>
-                              </tr>
+                            <span style="color: #008000;">OK</span>
                             
-                        </tbody>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            bbbb
+                        </td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    </tbody>
                 </table>
-            <hr>
+                <hr>
 
-            <h4>åxçêÉçÉOåèêî</h4>
-                <table border="1">
+                <h4>Ë≠¶Âëä„É≠„Ç∞‰ª∂Êï∞</h4>
+                <table border="1" style="border-collapse: collapse">
                     <tr>
-                      <th>ä˙ë“íl</th>
-                      <th>é¿ç€íl</th>
-                      <th>åãâ </th>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÂÆüÈöõÂÄ§</th>
+                        <th>ÁµêÊûú</th>
                     </tr>
                     <tr>
-                      <td>xxxx</td>
-                      <td>xxx</td>
-                      <td>
-                      
-                        <span style="color: #008000;">OK</span>
-                      
-                      </td>
+                        <td>xxxx</td>
+                        <td>xxx</td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
                     </tr>
                 </table>
-            <h4>åxçêÉçÉOï∂åæ</h4>
-                <table border="1">
-                  <thead>
+                <h4>Ë≠¶Âëä„É≠„Ç∞ÊñáË®Ä</h4>
+                <table border="1" style="border-collapse: collapse">
+                    <thead>
                     <tr>
-                        <th>ä˙ë“íl</th>
-                        <th>åãâ </th>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÁµêÊûú</th>
                     </tr>
-                  </thead>
-                        <tbody>
-                          
-                              <tr>
-                                <td>
-                                  cccc
-                                </td>
-                                <td>
-                                
-                                  <span style="color: #008000;">OK</span>
-                                
-                                </td>
-                              </tr>
+                    </thead>
+                    <tbody>
+                    
+                    <tr>
+                        <td>
+                            cccc
+                        </td>
+                        <td>
                             
-                              <tr>
-                                <td>
-                                  dddd
-                                </td>
-                                <td>
-                                
-                                  <span style="color: #008000;">OK</span>
-                                
-                                </td>
-                              </tr>
+                            <span style="color: #008000;">OK</span>
                             
-                        </tbody>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            dddd
+                        </td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    </tbody>
                 </table>
-            <hr>
-            <h4>https://xxxxxxxx</h4>
+                <hr>
+                <h4>Ê©üÂØÜÊÉÖÂ†±ÊØîËºÉ</h4>
+
+                <table border="1" style="border-collapse: collapse">
+                    <thead>
+                    <tr>
+                        <th>ÊúüÂæÖÂÄ§</th>
+                        <th>ÁµêÊûú</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    <tr>
+                        <td>
+                            aaaaa
+                        </td>
+                        <td>
+                            
+                            <span style="color: #008000;">OK</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            bbbb
+                        </td>
+                        <td>
+                            
+                            <span style="color: #ff0000;">NG</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    </tbody>
+                </table>
+                </br>
+                <a href="https://cloud.google.com/blog/ja">CloudLogginURL</a>
+            </details>
         
+
+„ÄÄ       <hr>
+
+
 
     </body>
 </html>

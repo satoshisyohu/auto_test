@@ -34,15 +34,15 @@
             [
               {
                 "column": {
-                  "key": "xxxxxx",
-                  "expect": "xxxx",
-                  "actual": "xxx",
+                  "key": "xxxxfffffxx",
+                  "expect": "xfffffffffxxx",
+                  "actual": null,
                   "result": true
                 }
               },
               {
                 "column": {
-                  "key": "xxxxxx",
+                  "key": "xxxddddddddxxx",
                   "expect": "xxxx",
                   "actual": "xxx",
                   "result": true
@@ -87,7 +87,16 @@
             }
           ]
         },
-        "uri": "https://xxxxxxxx"
+        "confidential": [
+          {
+            "word": "aaaaa",
+            "result": true
+          },          {
+            "word": "bbbb",
+            "result": false
+          }
+        ],
+        "uri": "https://cloud.google.com/blog/ja"
       }
     }
   ]
