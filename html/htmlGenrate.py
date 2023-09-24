@@ -1,4 +1,6 @@
 import json
+import os
+import webbrowser
 
 import jinja2
 from jinja2 import FileSystemLoader, Environment
@@ -36,7 +38,8 @@ def main():
         with open('./results/result_01.html', 'w', encoding='utf-8') as f:
             f.write(rendered_html)
             f.close()
-
+        filePath = os.path.abspath('./results/result_01.html')
+        webbrowser.open_new_tab(f'file:///{filePath}')
 
 if __name__ == "__main__":
     main()

@@ -5,6 +5,7 @@
 <html lang="ja">
 
 <head>
+
     <meta charset="UTF-8">
     <style type="text/css">
         .flex_test-box {
@@ -62,6 +63,31 @@
         td {
             background-color:  #c0c9ff; /* 背景色指定 */
         }
+
+        .heading {
+            align-items: center; /* 横線を上下中央 */
+            display: flex; /* 文字と横線を横並び */
+            justify-content: center; /* 文字を中央寄せ */
+        }
+        .heading::before,
+        .heading::after {
+            background-color: #1e90ff; /* 横線の色 */
+            content: "";
+            height: 5px; /* 横線の高さ */
+            width: 60px; /* 横線の長さ */
+        }
+        .heading::before {
+            margin-right: 15px; /* 文字との余白 */
+        }
+        .heading::after {
+            margin-left: 15px; /* 文字との余白 */
+        }
+        .test-result {
+            padding: 10px;
+            display:flex;
+            margin:  10px;              /* 外側の余白 */
+            background-color: #eee;
+        }
         　　</style>
 </head>
 
@@ -90,14 +116,15 @@
         <hr>
         </div>
         <h2>テスト結果</h2>
+    <div class="test-result">
         
-            <details>
+            <details open>
                 <summary>TS-TS-001 <span style="color: #008000;">Passed</span></p></summary>
                 
                 <span style="color: #008000;"> pass</span>
                 
                 </h2>
-                <h3>ステータスコード比較</h3>
+                <h3 class="heading">ステータスコード比較</h3>
                 <table border="1" style="border-collapse: collapse">
                     <tr>
                         <th>期待値</th>
@@ -130,10 +157,24 @@
                     </tr>
                 </table>
                 <h4>期待値</h4>
-                <p>{'aaa': 'aaa', 'bbb': 'bbbb'}</p>
+                <p>
+                <pre>
+                <script>
+                    var x = {"aaa": "aaa", "bbb": "bbbb"}
+                    document.write(JSON.stringify(x, null, "\t"))
+                </script>
+                </pre>
+                </p>
+
                 <h4>実際値</h4>
-                <p>{'aaa': 'aaa', 'bbb': 'bbbb'}</p>
-                <hr>
+                <p>
+                <pre>
+                <script>
+                    var x = {"aaa": "aaa", "bbb": "bbbb"}
+                    document.write(JSON.stringify(x, null, "\t"))
+                </script>
+                </pre>
+                </p>
 
                 <h3>TBL比較</h3>
                 
@@ -334,7 +375,7 @@
                 <a href="https://cloud.google.com/blog/ja">CloudLogginURL</a>
             </details>
         
-
+    </div>
 　       <hr>
 
 

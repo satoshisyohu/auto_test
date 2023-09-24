@@ -14,7 +14,7 @@
         "expect": 200,
         "actual": 200
       },
-      "response": {
+      "responses": {
         "type": "pdf",
         "result": true,
         "expect": {

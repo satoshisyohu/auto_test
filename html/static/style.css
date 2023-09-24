@@ -1,0 +1,18 @@
+.pie-chart-001 {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-image: conic-gradient(#2589d0 60%, #e2e2e2 60% 100%);
+}
+
+.pie-chart-001 span {
+    position: absolute;
+    top: 50%;
+    right: 25%;
+    transform: translate(50%, -50%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1em;
+}
