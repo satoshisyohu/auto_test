@@ -88,6 +88,52 @@
             margin:  10px;              /* 外側の余白 */
             background-color: #eee;
         }
+
+        .details-wrapper details {
+            border-bottom: none;
+        }
+        .details-wrapper details:last-child {
+            border-bottom: 1px solid #aaa;
+        }
+        details {
+            border: 1px solid #aaa;
+            max-width: 520px;
+        }
+        details .details-content-wrapper {
+            padding: 1rem 1rem 1rem 2rem;
+        }
+        details .details-content {
+            overflow: hidden;
+        }
+        details summary {
+            display: block;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0.5rem 0.5rem 36px;
+            transition: background-color .3s;
+        }
+        details summary:hover {
+            background-color: #f1fff8;
+        }
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+        details summary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 10px;
+            margin: auto 0;
+            width: 10px;
+            height: 10px;
+            border-top: 3px solid #097b27;
+            border-right: 3px solid #097b27;
+            transform: rotate(45deg);
+        }
+        details[open] summary {
+            border-bottom: 1px solid #aaa;
+        }
         　　</style>
 </head>
 
@@ -118,7 +164,51 @@
         <h2>テスト結果</h2>
     <div class="test-result">
         {% for data in data_list %}
-            <details open>
+
+
+        <div class="details-wrapper">
+            <details class="js-animation">
+                <summary>details 要素 TS-{{data.caseNo}}
+                    {% if data.result %}
+                    <span style="color: #008000;"> pass</span>
+                    {% else %}
+                    <span style="color: #ff0000;"> fail</span>
+                    {% endif %}
+
+                </summary>
+                <div class="details-content-wrapper">
+                    <div class="details-content">
+                        <p>details: 詳細折りたたみ要素</p>
+                        <p>ウィジェットが「開いた」状態になった時に情報を表示する...</p>
+                    </div>
+                </div>
+            </details>
+            <details class="js-animation">
+                <summary>summary 要素</summary>
+                <div class="details-content-wrapper">
+                    <div class="details-content">
+                        <p>summary: 概要明示要素</p>
+                        <p>details 要素の折り畳みボックスのキャプション、要約、説明文などを...</p>
+                    </div>
+                </div>
+            </details>
+            <details class="js-animation">
+                <summary>マークアップ</summary>
+                <div class="details-content-wrapper">
+                    <div class="details-content">
+                        <pre>...</pre>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+
+
+
+
+
+
+            <details class="js-animation" open>
                 <summary>TS-{{data.caseNo}} <span style="color: #008000;">Passed</span></p></summary>
                 {% if data.result %}
                 <span style="color: #008000;"> pass</span>
